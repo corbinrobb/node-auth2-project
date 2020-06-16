@@ -5,11 +5,11 @@ const jwt = require('jsonwebtoken');
 const secrets = require('../config/secrets.js');
 
 router.post('/register', (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, department } = req.body;
 
   const hash = bcryptjs.hashSync(password, process.env.HASH_ROUNDS || 8);
 
-  Users.add({ username, password: hash })
+  Users.add({ username, password: hash, department })
     .then((user) => {
       res.status(201).json(user);
     })
@@ -40,7 +40,8 @@ router.post('/login', (req, res) => {
 function generateToken(user) {
   const payload = {
     subject: user.id,
-    username: user.username
+    username: user.username,
+    department: user.department
   }
 
   const options = {
